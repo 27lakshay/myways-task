@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 
 import styled from "styled-components";
-import "./login.css";
 import { ButtonNormalBig } from "./button";
 
 const Background = styled.div`
@@ -10,6 +9,7 @@ const Background = styled.div`
     background: rgba(33, 32, 32, 0.6) 0% 0% no-repeat padding-box;
     position: fixed;
     z-index: 110;
+    transition: 0.5s;
 `;
 
 const LoginSideForm = styled.div`
@@ -89,7 +89,7 @@ const CloseButton = styled.div`
 function Login({ closeNav, showLogin, setShowLogin }) {
     const loginRef = useRef();
 
-    const closeNaveh = (e) => {
+    const closeNavAndBackground = (e) => {
         closeNav();
         if (loginRef.current === e.target) {
             setShowLogin(false);
@@ -98,13 +98,13 @@ function Login({ closeNav, showLogin, setShowLogin }) {
 
     return (
         <>
-            {showLogin ? <Background onClick={closeNaveh} ref={loginRef} /> : null}
+            {showLogin ? <Background onClick={closeNavAndBackground} ref={loginRef} /> : null}
             <LoginSideForm id="loginSideForm">
                 <div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <Title>Login</Title>
                         <CloseButton onClick={closeNav}>
-                            <i class="fas fa-times"></i>
+                            <i className="fas fa-times"></i>
                         </CloseButton>
                     </div>
                     <Card>

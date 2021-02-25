@@ -79,7 +79,7 @@ function Modal({ showModal, setShowModal }) {
                             aria-label="Close modal"
                             onClick={() => setShowModal((prev) => !prev)}
                         >
-                            <i class="fas fa-times"></i>
+                            <i className="fas fa-times"></i>
                         </CloseModalButton>
                     </ModalWrapper>
                 </Background>

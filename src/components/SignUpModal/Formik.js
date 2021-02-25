@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { ButtonNormalBig } from "../button";
+import { ButtonNormalBig, ButtonNormalSmall } from "../button";
 // import { Debug } from "./Debug";
 
 import styled from "styled-components";
@@ -13,6 +13,7 @@ const FormWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 `;
 const Name = styled.div`
     display: flex;
@@ -32,6 +33,19 @@ const CustomField = styled(Field)`
     letter-spacing: 0px;
     color: #000000;
     opacity: 0.5;
+`;
+
+const OTPField = styled(Field)`
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border: 1px solid #707070;
+    border-radius: 32px;
+    height: 63px;
+    font: normal normal normal 22px/30px Segoe UI;
+    letter-spacing: 0px;
+    color: #000000;
+    padding: 14px;
+    margin: 3rem 0 1rem 0;
+    max-width: 336px;
 `;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -79,19 +93,30 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
             validationSchema={step.props.validationSchema}
         >
             {(formik) => (
-                <Form>
+                <Form style={{ width: "100%"}}>
                     {step}
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                        {stepNumber > 0 && (
-                            <button onClick={() => previous(formik.values)} type="button">
-                                Back
-                            </button>
-                        )}
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            width: "100%"
+                        }}
+                    >
                         <div>
-                            <ButtonNormalBig disabled={formik.isSubmitting} type="submit">
-                                {isLastStep ? "Submit" : "Sign Up"}
+                            <ButtonNormalBig disabled={formik.isSubmitting} type="submit" >
+                                {isLastStep ? "Enter" : "Sign Up"}
                             </ButtonNormalBig>
                         </div>
+                        {stepNumber > 0 && (
+                            <ButtonNormalSmall
+                                onClick={() => previous(formik.values)}
+                                type="button"
+                            >
+                                Back
+                            </ButtonNormalSmall>
+                        )}
                     </div>
                     {/* <Debug /> */}
                 </Form>
@@ -172,22 +197,24 @@ const App = () => (
                 </div>
             </WizardStep>
             <WizardStep
+                style={{ width: "100%" }}
                 onSubmit={() => console.log("Step2 onSubmit")}
                 validationSchema={Yup.object({
                     OTP: Yup.string().required("required"),
                 })}
             >
+                <h1>OTP Sent!</h1>
                 <div
                     style={{
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
+                        width: "100%"
                     }}
                 >
-                    <label htmlFor="email">OTP Sent!</label>
-                    <CustomField
-                        // style={{ borderRadius: "32px", width: "336px"}}
+                    <OTPField
+                        style={{ borderRadius: "32px", width: "100%" }}
                         component="input"
                         id="otp"
                         name="otp"
@@ -195,7 +222,7 @@ const App = () => (
                         type="text"
                     />
                     <ErrorMessage className="error" component="div" name="otp" />
-                    <label htmlFor="email">details</label>
+                    <label htmlFor="email"></label>
                 </div>
             </WizardStep>
         </Wizard>

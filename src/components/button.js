@@ -28,6 +28,7 @@ export const ButtonNormalSmall = styled.button`
 export const ButtonNormalBig = styled.button`
     width: 236px;
     height: 53px;
+    margin: 1rem 0;
     border: none;
     cursor: pointer;
     transition: transform 0.2s;
@@ -40,5 +41,8 @@ export const ButtonNormalBig = styled.button`
     text-transform: capitalize;
     :hover {
         transform: scale(1.05);
+    }
+    @media screen and (max-width: 525px){
+        width: 200px;
     }
 `;

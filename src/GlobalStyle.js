@@ -6,7 +6,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: "Open Sans", sans-serif;
-    outline: 1px solid red;
+    /* outline: 1px solid red; */
     /* color: #23242a; */
     --green: #7ECB20;
     --black: #000000;

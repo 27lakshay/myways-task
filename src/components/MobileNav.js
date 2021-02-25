@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { FaTimes } from "react-icons/fa";
-import logoImage from "../assets/myways_logo.png";
 
 const DropDownContainer = styled.div`
     position: fixed;

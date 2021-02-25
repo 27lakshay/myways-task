@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { Formik } from "formik";
 
 import styled from "styled-components";
 import "./login.css";
@@ -15,7 +14,7 @@ const Background = styled.div`
 
 const LoginSideForm = styled.div`
     height: 100%;
-    /* width: 0; */
+    width: 0;
     position: fixed;
     z-index: 120;
     top: 0;
@@ -52,7 +51,6 @@ const Input = styled.input`
     letter-spacing: 0px;
     color: rgba(110, 110, 110, 1);
     padding: 1rem;
-
 `;
 
 const Card = styled.div`
@@ -70,6 +68,7 @@ const Link = styled.div`
     font: normal normal 600 15px/20px Segoe UI;
     letter-spacing: 0px;
     color: #7ecb20;
+    cursor: pointer;
 `;
 const LoginButton = styled(ButtonNormalBig)`
     border-radius: 4px;
@@ -81,6 +80,7 @@ const LoginButton = styled(ButtonNormalBig)`
 `;
 
 const CloseButton = styled.div`
+    cursor: pointer;
     display: inline-block;
     color: #707070;
     font: normal normal bold 24px/32px Segoe UI;
@@ -113,7 +113,7 @@ function Login({ closeNav, showLogin, setShowLogin }) {
                         </div>
                         <Input placeholder="Email"></Input>
                         <Input placeholder="Password"></Input>
-                        <Link style={{ textAlign: "left"}}>Forgot Password?</Link>
+                        <Link style={{ textAlign: "left" }}>Forgot Password?</Link>
                         <LoginButton>Login</LoginButton>
                         <Link>New to MyWays? Sign Up here</Link>
                     </Card>

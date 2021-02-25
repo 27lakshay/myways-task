@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import { ButtonNormalBig } from "../button";
 // import { Debug } from "./Debug";
 
 import styled from "styled-components";
 
 const FormWrapper = styled.div`
     height: 100%;
+    width: 340px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+`;
+const Name = styled.div`
+    display: flex;
+    gap: 10px;
+    @media screen and (max-width: 525px) {
+        flex-direction: column;
+    }
 `;
 const CustomField = styled(Field)`
     border: 1px solid rgba(112, 112, 112, 1);
@@ -79,9 +88,9 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
                             </button>
                         )}
                         <div>
-                            <button disabled={formik.isSubmitting} type="submit">
-                                {isLastStep ? "Submit" : "Next"}
-                            </button>
+                            <ButtonNormalBig disabled={formik.isSubmitting} type="submit">
+                                {isLastStep ? "Submit" : "Sign Up"}
+                            </ButtonNormalBig>
                         </div>
                     </div>
                     {/* <Debug /> */}
@@ -116,9 +125,9 @@ const App = () => (
             >
                 <h1>Sign Up</h1>
                 <p>It's quick and easy.</p>
-                <div style={{ display: "flex", gap: "10px" }}>
+                <Name>
                     <CustomField
-                        // style={{ width: "162px" }}
+                        style={{ width: "100%" }}
                         autoComplete="given-name"
                         component="input"
                         id="firstName"
@@ -128,7 +137,7 @@ const App = () => (
                     />
                     <ErrorMessage className="error" component="div" name="firstName" />
                     <CustomField
-                        // style={{ width: "162px" }}
+                        style={{ width: "100%" }}
                         autoComplete="family-name"
                         component="input"
                         id="lastName"
@@ -137,10 +146,10 @@ const App = () => (
                         type="text"
                     />
                     <ErrorMessage className="error" component="div" name="lastName" />
-                </div>
+                </Name>
                 <div>
                     <CustomField
-                        // style={{ width: "336px" }}
+                        style={{ width: "100%" }}
                         autoComplete="email"
                         component="input"
                         id="email"
@@ -152,7 +161,7 @@ const App = () => (
                 </div>
                 <div>
                     <CustomField
-                        // style={{ width: "336px" }}
+                        style={{ width: "100%" }}
                         component="input"
                         id="password"
                         name="password"
@@ -178,7 +187,7 @@ const App = () => (
                 >
                     <label htmlFor="email">OTP Sent!</label>
                     <CustomField
-                      // style={{ borderRadius: "32px", width: "336px"}}
+                        // style={{ borderRadius: "32px", width: "336px"}}
                         component="input"
                         id="otp"
                         name="otp"

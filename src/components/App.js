@@ -6,11 +6,10 @@ import HomeScreen from "./Home";
 import GlobalStyle from "../GlobalStyle";
 import Navbar from "./Navbar";
 import MobileNav from "./MobileNav";
-import Modal from './Modal';
 
 function App() {
     const [isOpen, setIsOpen] = useState(false);
-    
+
     const toggle = () => {
         setIsOpen(!isOpen);
     };

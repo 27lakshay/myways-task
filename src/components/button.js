@@ -1,5 +1,5 @@
 import styled from "styled-components/macro";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 export const ButtonNormalSmall = styled.button`
     width: 134px;

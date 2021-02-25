@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useState } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import Wizard from "./SignUpModal/Formik";
 
@@ -14,7 +14,8 @@ const Background = styled.div`
 `;
 
 const ModalWrapper = styled.div`
-    width: 800px;
+    width: 80vw;
+    max-width: 680px;
     height: 500px;
     box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
     background: #fff;
@@ -22,44 +23,16 @@ const ModalWrapper = styled.div`
     position: relative;
     z-index: 120;
     border-radius: 10px;
-    @media screen and (max-width: 525px){
+    display: flex;
+    justify-content: center;
+    @media screen and (max-width: 525px) {
         width: 95vw;
-    }
-`;
-
-const ModalImg = styled.img`
-    width: 100%;
-    height: 100%;
-    border-radius: 10px 0 0 10px;
-    background: #000;
-`;
-
-const ModalContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    line-height: 1.8;
-    color: #141414;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    p {
-        margin-bottom: 1rem;
-    }
-    button {
-        padding: 10px 24px;
-        background: #141414;
-        color: #fff;
-        border: none;
     }
 `;
 
 const CloseModalButton = styled.button`
     cursor: pointer;
+    font-size: 26px;
     position: absolute;
     top: 20px;
     right: 20px;
@@ -67,6 +40,8 @@ const CloseModalButton = styled.button`
     height: 32px;
     padding: 0;
     z-index: 10;
+    border: none;
+    background: none;
 `;
 function Modal({ showModal, setShowModal }) {
     const modalRef = useRef();
@@ -103,7 +78,9 @@ function Modal({ showModal, setShowModal }) {
                         <CloseModalButton
                             aria-label="Close modal"
                             onClick={() => setShowModal((prev) => !prev)}
-                        />
+                        >
+                            <i class="fas fa-times"></i>
+                        </CloseModalButton>
                     </ModalWrapper>
                 </Background>
             ) : null}

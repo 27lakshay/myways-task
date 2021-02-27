@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AuthProvider } from "../contexts/AuthContext";
 import { Router, Route, Switch } from "react-router-dom";
 import history from "../history";
 
@@ -17,11 +18,13 @@ function App() {
     return (
         <Router history={history}>
             <GlobalStyle />
+            <AuthProvider>
             <Navbar toggle={toggle} />
             <MobileNav isOpen={isOpen} toggle={toggle} />
             <Switch>
-                <Route path="/" exact component={HomeScreen} />
+                <Route exact path="/" exact component={HomeScreen} />
             </Switch>
+            </AuthProvider>
         </Router>
     );
 }

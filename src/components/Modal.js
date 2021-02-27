@@ -45,7 +45,7 @@ const CloseModalButton = styled.button`
 `;
 function Modal({ showModal, setShowModal }) {
     const modalRef = useRef();
-
+    
     const closeModal = (e) => {
         if (modalRef.current === e.target) {
             setShowModal(false);
@@ -73,7 +73,7 @@ function Modal({ showModal, setShowModal }) {
                 <Background onClick={closeModal} ref={modalRef}>
                     <ModalWrapper showModal={showModal}>
                         {/* <ModalContent> */}
-                        <Wizard />
+                        <Wizard closeModal={closeModal}/>
                         {/* </ModalContent> */}
                         <CloseModalButton
                             aria-label="Close modal"

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import { ButtonNormalBig, ButtonNormalSmall } from "../button";
-// import { Debug } from "./Debug";
-
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
+import * as Yup from "yup";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+
+import { ButtonNormalBig, ButtonNormalSmall } from "../button";
+import { useAuth } from "../../contexts/AuthContext";
+import checkcircle from "../../assets/checkcircle.svg";
+// import { Debug } from "./Debug";
 
 const FormWrapper = styled.div`
     height: 100%;
@@ -47,17 +49,22 @@ const OTPField = styled(Field)`
     margin: 3rem 0 1rem 0;
     max-width: 336px;
 `;
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 // Wizard is a single Formik instance whose children are each page of the
 // multi-step form. The form is submitted on each forward transition (can only
 // progress with valid input), whereas a backwards step is allowed with
 // incomplete data. A snapshot of form state is used as initialValues after each
 // transition. Each page has an optional submit handler, and the top-level
 // submit is called when the final page is submitted.
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const Wizard = ({ children, initialValues, onSubmit }) => {
+    const { requestotp, signup } = useAuth();
+
     const [stepNumber, setStepNumber] = useState(0);
     const steps = React.Children.toArray(children);
+
+    //holds values entered in the fields even after switching steps
     const [snapshot, setSnapshot] = useState(initialValues);
 
     const step = steps[stepNumber];
@@ -76,7 +83,12 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
 
     const handleSubmit = async (values, bag) => {
         if (step.props.onSubmit) {
-            await step.props.onSubmit(values, bag);
+            if (step.props.onSubmit.step === 1) {
+                await requestotp(values.email);
+            } else if (step.props.onSubmit.step === 2) {
+                await signup(values);
+                // window.alert("Signed Up Successfully");
+            }
         }
         if (isLastStep) {
             return onSubmit(values, bag);
@@ -93,7 +105,7 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
             validationSchema={step.props.validationSchema}
         >
             {(formik) => (
-                <Form style={{ width: "100%"}}>
+                <Form style={{ width: "100%" }}>
                     {step}
                     <div
                         style={{
@@ -101,11 +113,15 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
                             justifyContent: "center",
                             flexDirection: "column",
                             alignItems: "center",
-                            width: "100%"
+                            width: "100%",
                         }}
                     >
                         <div>
-                            <ButtonNormalBig disabled={formik.isSubmitting} type="submit" >
+                            <ButtonNormalBig
+                                disabled={formik.isSubmitting}
+                                type="submit"
+                                style={{ display: isLastStep ? "none" : "block" }}
+                            >
                                 {isLastStep ? "Enter" : "Sign Up"}
                             </ButtonNormalBig>
                         </div>
@@ -113,6 +129,7 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
                             <ButtonNormalSmall
                                 onClick={() => previous(formik.values)}
                                 type="button"
+                                style={{ display: isLastStep ? "none" : "block" }}
                             >
                                 Back
                             </ButtonNormalSmall>
@@ -127,106 +144,122 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
 
 const WizardStep = ({ children }) => children;
 
-const App = () => (
-    <FormWrapper>
-        <Wizard
-            initialValues={{
-                email: "",
-                firstName: "",
-                lastName: "",
-                password: "",
-                otp: "",
-            }}
-            onSubmit={async (values) => sleep(300).then(() => console.log("Wizard submit", values))}
-        >
-            <WizardStep
-                onSubmit={() => console.log("Step1 onSubmit")}
-                // validationSchema={Yup.object({
-                //     firstName: Yup.string().required("required"),
-                //     lastName: Yup.string().required("required"),
-                //     email: Yup.string().email("Invalid email address").required("required"),
-                //     password: Yup.string().required("required"),
-                // })}
+const App = () => {
+    return (
+        <FormWrapper>
+            <Wizard
+                initialValues={{
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    password: "",
+                    otp: "",
+                }}
             >
-                <h1>Sign Up</h1>
-                <p>It's quick and easy.</p>
-                <Name>
-                    <CustomField
-                        style={{ width: "100%" }}
-                        autoComplete="given-name"
-                        component="input"
-                        id="firstName"
-                        name="firstName"
-                        placeholder="First Name"
-                        type="text"
-                    />
-                    <ErrorMessage className="error" component="div" name="firstName" />
-                    <CustomField
-                        style={{ width: "100%" }}
-                        autoComplete="family-name"
-                        component="input"
-                        id="lastName"
-                        name="lastName"
-                        placeholder="Last Name"
-                        type="text"
-                    />
-                    <ErrorMessage className="error" component="div" name="lastName" />
-                </Name>
-                <div>
-                    <CustomField
-                        style={{ width: "100%" }}
-                        autoComplete="email"
-                        component="input"
-                        id="email"
-                        name="email"
-                        placeholder="Email"
-                        type="text"
-                    />
-                    <ErrorMessage className="error" component="div" name="email" />
-                </div>
-                <div>
-                    <CustomField
-                        style={{ width: "100%" }}
-                        component="input"
-                        id="password"
-                        name="password"
-                        placeholder="Password"
-                        type="password"
-                    />
-                    <ErrorMessage className="error" component="div" name="password" />
-                </div>
-            </WizardStep>
-            <WizardStep
-                style={{ width: "100%" }}
-                onSubmit={() => console.log("Step2 onSubmit")}
-                validationSchema={Yup.object({
-                    OTP: Yup.string().required("required"),
-                })}
-            >
-                <h1>OTP Sent!</h1>
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "100%"
-                    }}
+                <WizardStep
+                    onSubmit={{ step: 1 }}
+                    // validationSchema={Yup.object({
+                    //     firstName: Yup.string().required("required"),
+                    //     lastName: Yup.string().required("required"),
+                    //     email: Yup.string().email("Invalid email address").required("required"),
+                    //     password: Yup.string().required("required"),
+                    // })}
                 >
-                    <OTPField
-                        style={{ borderRadius: "32px", width: "100%" }}
-                        component="input"
-                        id="otp"
-                        name="otp"
-                        placeholder="Enter your OTP"
-                        type="text"
-                    />
-                    <ErrorMessage className="error" component="div" name="otp" />
-                    <label htmlFor="email"></label>
-                </div>
-            </WizardStep>
-        </Wizard>
-    </FormWrapper>
-);
+                    <h1>Sign Up</h1>
+                    <p>It's quick and easy.</p>
+                    <Name>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <CustomField
+                                style={{ width: "100%" }}
+                                autoComplete="given-name"
+                                component="input"
+                                id="firstName"
+                                name="firstName"
+                                placeholder="First Name"
+                                type="text"
+                                required="required"
+                            />
+                            {/* <ErrorMessage className="error" component="div" name="firstName" /> */}
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <CustomField
+                                style={{ width: "100%" }}
+                                autoComplete="family-name"
+                                component="input"
+                                id="lastName"
+                                name="lastName"
+                                placeholder="Last Name"
+                                type="text"
+                                required="required"
+                            />
+                            {/* <ErrorMessage className="error" component="div" name="lastName" /> */}
+                        </div>
+                    </Name>
+                    <div>
+                        <CustomField
+                            style={{ width: "100%" }}
+                            autoComplete="email"
+                            component="input"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            required="required"
+                            type="email"
+                        />
+                        {/* <ErrorMessage className="error" component="div" name="email" /> */}
+                    </div>
+                    <div>
+                        <CustomField
+                            style={{ width: "100%" }}
+                            component="input"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                            type="password"
+                            required="required"
+                            minLength="8"
+                        />
+                        {/* <ErrorMessage className="error" component="div" name="password" /> */}
+                    </div>
+                </WizardStep>
+                <WizardStep
+                    style={{ width: "100%" }}
+                    onSubmit={{ step: 2 }}
+                    // validationSchema={Yup.object({
+                    //     OTP: Yup.string().required("required"),
+                    // })}
+                >
+                    <h1>OTP Sent!</h1>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
+                        }}
+                    >
+                        <OTPField
+                            style={{ borderRadius: "32px", width: "100%" }}
+                            component="input"
+                            id="otp"
+                            name="otp"
+                            placeholder="Enter your OTP"
+                            type="number"
+                            required="required"
+                            minLength="4"
+                        />
+                        {/* <ErrorMessage className="error" component="div" name="otp" /> */}
+                        <label htmlFor="email"></label>
+                    </div>
+                </WizardStep>
+                <WizardStep style={{ width: "100%" }}>
+                    <img src={checkcircle} style={{ width: "70px" }}></img>
+                    <h1>Signed Up Successfully</h1>
+                </WizardStep>
+            </Wizard>
+        </FormWrapper>
+    );
+};
 
 export default App;

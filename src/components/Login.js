@@ -1,6 +1,8 @@
-import React, { useRef } from "react";
-
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
+
+import { useAuth } from "../contexts/AuthContext";
+import history from "../history";
 import { ButtonNormalBig } from "./button";
 
 const Background = styled.div`
@@ -88,12 +90,21 @@ const CloseButton = styled.div`
 
 function Login({ closeNav, showLogin, setShowLogin }) {
     const loginRef = useRef();
+    const { login, currentUser } = useAuth();
 
-    const closeNavAndBackground = (e) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const status = await login(email, password);
+        if (status) {
+            closeNavAndBackground();
+        } else window.alert("Email or password wrong");
+    }
+    // history.push("/dashboard");
+    const closeNavAndBackground = () => {
         closeNav();
-        if (loginRef.current === e.target) {
-            setShowLogin(false);
-        }
     };
 
     return (
@@ -107,16 +118,31 @@ function Login({ closeNav, showLogin, setShowLogin }) {
                             <i className="fas fa-times"></i>
                         </CloseButton>
                     </div>
-                    <Card>
-                        <div style={{ borderBottom: "2px solid #7ecb20", width: "120px" }}>
-                            <Label>Student</Label>
-                        </div>
-                        <Input placeholder="Email"></Input>
-                        <Input placeholder="Password"></Input>
-                        <Link style={{ textAlign: "left" }}>Forgot Password?</Link>
-                        <LoginButton>Login</LoginButton>
-                        <Link>New to MyWays? Sign Up here</Link>
-                    </Card>
+                    <form onSubmit={handleSubmit}>
+                        <Card>
+                            <div style={{ borderBottom: "2px solid #7ecb20", width: "120px" }}>
+                                <Label>Student</Label>
+                            </div>
+                            <Input
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                type="email"
+                                required="required"
+                            ></Input>
+                            <Input
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                type="password"
+                                required="required"
+                                minLength="8"
+                            ></Input>
+                            <Link style={{ textAlign: "left" }}>Forgot Password?</Link>
+                            <LoginButton type="submit">Login</LoginButton>
+                            <Link>New to MyWays? Sign Up here</Link>
+                        </Card>
+                    </form>
                 </div>
             </LoginSideForm>
         </>

@@ -3,6 +3,7 @@ import styled, { css } from "styled-components/macro";
 import { Link } from "react-router-dom";
 import { ButtonNormalSmall } from "./button";
 import { FaBars } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
 import logoImage from "../assets/myways_logo.png";
 import Modal from "./Modal";
 import Login from "./Login";
@@ -74,6 +75,7 @@ const Navbar = ({ toggle }) => {
     const [scrollNav, setScrollNav] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
+    const { currentUser, logout } = useAuth();
 
     const openModal = () => {
         setShowModal((prev) => !prev);
@@ -92,11 +94,13 @@ const Navbar = ({ toggle }) => {
     }, []);
 
     function openNav() {
-        setShowLogin(true);
-        if (window.innerWidth < 525) {
-            document.getElementById("loginSideForm").style.width = "90vw";
-        } else {
-            document.getElementById("loginSideForm").style.width = "420px";
+        if (currentUser === false) {
+            setShowLogin(true);
+            if (window.innerWidth < 525) {
+                document.getElementById("loginSideForm").style.width = "90vw";
+            } else {
+                document.getElementById("loginSideForm").style.width = "420px";
+            }
         }
     }
     function closeNav() {
@@ -115,12 +119,24 @@ const Navbar = ({ toggle }) => {
                     <NavMenuLinks>Pricing</NavMenuLinks>
                     <NavMenuLinks>About Us</NavMenuLinks>
                 </NavMenu>
-                <div>
-                    <NavMenuLinks onClick={openModal} style={{ color: "#7ECB20" }}>
-                        SIGN UP
+                {currentUser ? (
+                    <NavMenuLinks
+                        onClick={logout}
+                        style={{ color: "#7ECB20", paddingTop: "8px", fontWeight: "600" }}
+                    >
+                        Log Out
                     </NavMenuLinks>
-                    <ButtonNormalSmall onClick={openNav}>Login</ButtonNormalSmall>
-                </div>
+                ) : (
+                    <div>
+                        <NavMenuLinks
+                            onClick={openModal}
+                            style={{ color: "#7ECB20", fontWeight: "600" }}
+                        >
+                            SIGN UP
+                        </NavMenuLinks>
+                        <ButtonNormalSmall onClick={openNav}>Login</ButtonNormalSmall>
+                    </div>
+                )}
             </Nav>
             <Modal showModal={showModal} setShowModal={setShowModal} />
             <Login showLogin={showLogin} setShowLogin={setShowLogin} closeNav={closeNav} />
